@@ -1,10 +1,13 @@
 import React from 'react'
+import {Input} from "@/components/ui/input";
 
 const NavSearch = () => {
     return (
-        <div>
-        
-        </div>
+        <Input
+            type="text"
+            placeholder="Find a property..."
+            className="max-w-xs dark:bg-muted"
+        />
     )
 }
 
