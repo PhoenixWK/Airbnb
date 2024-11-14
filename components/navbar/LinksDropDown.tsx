@@ -4,7 +4,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -14,6 +13,7 @@ import {Button} from "@/components/ui/button";
 import UserIcon from "@/components/navbar/UserIcon";
 import {links} from "@/utils/links"
 import SignOutLink from "@/components/navbar/SignOutLink";
+import {SignedIn, SignedOut, SignInButton, SignUpButton} from "@clerk/nextjs";
 
 const LinksDropDown = () => {
     return (
@@ -25,16 +25,35 @@ const LinksDropDown = () => {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-52" align="start" sideOffset={10}>
-                {links.map((link) => (
-                    <DropdownMenuItem key={link.href}>
-                        <Link
-                            href={link.href}
-                            className="capitalize w-full"
-                        >
-                            {link.label}
-                        </Link>
+                <SignedOut>
+                    <DropdownMenuItem>
+                        <SignInButton mode="modal">
+                            <button className="w-full text-left">Login</button>
+                        </SignInButton>
                     </DropdownMenuItem>
-                ))}
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuItem>
+                        <SignUpButton mode="modal">
+                            <button className="w-full text-left">Sign up</button>
+                        </SignUpButton>
+                    </DropdownMenuItem>
+                </SignedOut>
+                <SignedIn>
+                    {links.map((link) => (
+                        <DropdownMenuItem key={link.href}>
+                            <Link
+                                href={link.href}
+                                className="capitalize w-full"
+                            >
+                                {link.label}
+                            </Link>
+                        </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuItem>
+                        <SignOutLink/>
+                    </DropdownMenuItem>
+                </SignedIn>
             </DropdownMenuContent>
         </DropdownMenu>
     )

@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <ClerkProvider>
+      <ClerkProvider signInFallbackRedirectUrl="/profile/create">
           <html lang="en" suppressHydrationWarning={true}>
           <body
               className={`${geistSans.variable} ${geistMono.variable} antialiased`}
