@@ -22,7 +22,7 @@ export default function FormContainer({
                 description: state.message,
             })
         }
-    }, [state])
+    }, [state, toast])
     return (
         <form action={formAction}>
             {children}
