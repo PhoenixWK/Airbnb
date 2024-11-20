@@ -3,10 +3,14 @@ import FormContainer from "@/components/form/FormContainer";
 import FormInput from "@/components/form/FormInput";
 import {SubmitButton} from "@/components/form/Button";
 import {createProfileAction} from "@/utils/actions";
+import {currentUser} from "@clerk/nextjs/server";
+import {redirect} from "next/navigation";
 
+export default async function CreateProfilePage() {
+    //Check if user has its profile, then redirect user to homepage
+    const user = await currentUser();
+    if(user?.privateMetadata?.hasProfile) return redirect('/');
 
-
-export default function CreateProfilePage() {
     return (
         <section className="container pt-6">
             <h1 className="text-2xl font-semibold capitalize mb-8">New user</h1>
