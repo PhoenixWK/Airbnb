@@ -1,6 +1,6 @@
 'use server'
 
-import {profileSchema} from "@/utils/schemas";
+import {profileSchema, validateWithZodSchema} from "@/utils/schemas";
 import db from './db';
 import { auth, clerkClient, currentUser } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
@@ -16,7 +16,6 @@ const getAuthUser = async () => {
 }
 
 const renderError = (error: unknown): {message: string} => {
-    console.error(error);
     return {
         message: error instanceof Error ? error.message : "An error occured"
     }
@@ -31,7 +30,7 @@ export const createProfileAction = async (
        if(!user) throw new Error('Please login to create a profile');
 
        const rawData = Object.fromEntries(formData); //transform key-value pairs from Set into object
-       const validateFields = profileSchema.parse(rawData); //validation with Zod
+       const validateFields = validateWithZodSchema(profileSchema, rawData); //validation with Zod
        await db.profile.create({ //create new data in profile table
            data: {
                clerkId: user.id,
@@ -82,6 +81,13 @@ export const fetchProfile = async () => {
     return profile;
 }
 
+export const updateProfileImageAction = async (
+    prevState: any,
+    formData: FormData
+): Promise<{ message: string }> => {
+    return { message: 'Profile image updated successfully' };
+};
+
 export const updateProfileAction = async (
     prevState: any,
     formData: FormData
@@ -89,8 +95,9 @@ export const updateProfileAction = async (
     const user = await getAuthUser();
 
     try {
-        const rawData = Object.fromEntries(formData); //transform key-value pairs from Set into object
-        const validateFields = profileSchema.parse(rawData); //validation with Zod
+        //transform key-value pairs from Set into object
+        const rawData = Object.fromEntries(formData);
+        const validateFields = validateWithZodSchema(profileSchema, rawData)
 
         //update single record
         await db.profile.update({
@@ -98,12 +105,14 @@ export const updateProfileAction = async (
                 clerkId: user.id
             },
             data: {
-                ...validateFields,
+                firstName: validateFields.firstName,
+                lastName: validateFields.lastName,
+                username: validateFields.userName
             }
         });
-        revalidatePath('/profile');
+        revalidatePath('/profile'); //use to cache new data after submitting form
     }catch(error) {
-        renderError(error);
+        return renderError(error);
     }
     return {message: 'Profile updated successfully'};
 }

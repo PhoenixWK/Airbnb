@@ -4,18 +4,26 @@ import { useFormStatus } from 'react-dom'
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button'
 
+type btnSize = 'default' | 'sm' | 'icon' | 'lg' | null | undefined;
+
 type SubmitButtonProps = {
-    clasName?: string,
-    text?: string
+    className?: string,
+    text?: string,
+    size?: btnSize
 }
 
-export function SubmitButton({ clasName='', text='submit' }: SubmitButtonProps) {
+export function SubmitButton({
+    className = '',
+    text = 'Submit',
+    size = 'lg' //this is a default value
+}: SubmitButtonProps) {
     const { pending } = useFormStatus();
 
     return (
         <Button
             type="submit"
-            className={`capitalize ${clasName}`}
+            size={size}
+            className={`capitalize ${className}`}
             disabled={pending}
         >
             {pending ? (
